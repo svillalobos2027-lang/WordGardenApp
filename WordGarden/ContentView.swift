@@ -14,6 +14,8 @@ struct ContentView: View {
     @State private var gameStatusMessage = "How Many Guesses to Uncover the Hidden Word?"
     @State private var currentWord = 0
     @State private var guessedLetter = ""
+    @State private var imageName = "flower8"
+    @State private var playAgainHidden = true
     
     var body: some View {
         VStack {
@@ -28,36 +30,64 @@ struct ContentView: View {
                     Text("Words in Game: \(wordsToGuess.count)")
                 }
             }
+            .padding(.horizontal)
+            
+            
+            
             Spacer()
             Text(gameStatusMessage)
                 .font(.title)
                 .multilineTextAlignment(.center)
+                .padding()
             
             //TODO: Switch to wordsToGuess[currentWord]
             Text("_ _ _ _ _")
                 .font(.title)
             
-            
-            
-            HStack{
-                TextField("", text: $guessedLetter)
-                    .textFieldStyle(.roundedBorder)
-                    .frame(width: 30)
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 5)
-                            .stroke(.gray, lineWidth: 2)
-                    }
+            if playAgainHidden{
                 
-                Button("Guess a Letter:") {
-                    //TODO: Guess a Letter button action here
+                HStack{
+                    TextField("", text: $guessedLetter)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 30)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 5)
+                                .stroke(.gray, lineWidth: 2)
+                        }
+                        .keyboardType(.asciiCapable)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.characters)
+                        .onChange(of: guessedLetter) {
+                            guessedLetter = guessedLetter.trimmingCharacters(in: .letters.inverted)
+                            guard let lastChar =guessedLetter.last else {
+                                return
+                            }
+                            guessedLetter = String(lastChar)
+                        }
+                    
+                    Button("Guess a Letter:") {
+                        //TODO: Guess a Letter button action here
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.mint)
                 }
-                .buttonStyle(.bordered)
+            } else {
+                
+                Button("Another Word?") {
+                    //TODO: Another Word Button Action Here
+                   
+                }
+                .buttonStyle(.borderedProminent)
                 .tint(.mint)
             }
 
             Spacer()
+            Image(imageName)
+                .resizable()
+                .scaledToFit()
+            
         }
-        .padding()
+        .ignoresSafeArea(edges: .bottom)
     }
 }
 
